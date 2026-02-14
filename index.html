@@ -423,7 +423,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>🏠 DomPay</h1> <a href="https://wa.me/qr/ALXKVQFABW6WO1" class="custom-link" target="_blank">WhatsApp: Shuhrat</a>
+            <h1>🏠 DomPay</h1><a href="https://wa.me/qr/ALXKVQFABW6WO1" class="custom-link" target="_blank">WhatsApp: Shuhrat</a>
             <div class="subtitle">Идоракунии шартномаҳои хариди хона ва пардохтҳо</div>
         </header>
 
@@ -1316,9 +1316,14 @@
                             const totalPaid = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
                             const initialNeed = contract.housePrice * contract.initialPercent / 100;
                             const paidForMonths = Math.max(0, totalPaid - initialNeed);
-                            const monthsPaid = Math.floor(paidForMonths / monthlyPayment);
                             
-                            if (i >= monthsPaid) {
+                            // Ҳисоби боқимондаи ин моҳ
+                            const paidUntilThisMonth = Math.min(paidForMonths, i * monthlyPayment);
+                            const paidForCurrentMonth = Math.max(0, paidForMonths - (i * monthlyPayment));
+                            const remainingForThisMonth = Math.max(0, monthlyPayment - paidForCurrentMonth);
+                            
+                            // Агар ин моҳ пурра пардохт нашуда бошад
+                            if (remainingForThisMonth > 0) {
                                 found = true;
                                 const row = document.createElement('tr');
                                 row.innerHTML = `
@@ -1326,7 +1331,7 @@
                                     <td>${contract.buyerPhone}</td>
                                     <td>${contract.contractNo}</td>
                                     <td>${contract.contractName}</td>
-                                    <td>${formatNumber(monthlyPayment)}</td>
+                                    <td>${formatNumber(remainingForThisMonth)}</td>
                                 `;
                                 tbody.appendChild(row);
                             }
@@ -1474,10 +1479,14 @@
                             const totalPaid = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
                             const initialNeed = contract.housePrice * contract.initialPercent / 100;
                             const paidForMonths = Math.max(0, totalPaid - initialNeed);
-                            const monthsPaid = Math.floor(paidForMonths / monthlyPayment);
                             
-                            if (i >= monthsPaid) {
-                                csv += `${contract.buyerName};${contract.buyerPhone};${contract.contractNo};${contract.contractName};${monthlyPayment}\n`;
+                            // Ҳисоби боқимондаи ин моҳ
+                            const paidForCurrentMonth = Math.max(0, paidForMonths - (i * monthlyPayment));
+                            const remainingForThisMonth = Math.max(0, monthlyPayment - paidForCurrentMonth);
+                            
+                            // Агар ин моҳ пурра пардохт нашуда бошад
+                            if (remainingForThisMonth > 0) {
+                                csv += `${contract.buyerName};${contract.buyerPhone};${contract.contractNo};${contract.contractName};${remainingForThisMonth}\n`;
                             }
                             break;
                         }
