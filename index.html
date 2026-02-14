@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DomPay - Идоракунии шартномаҳои хариди хона</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-lg);
+            border-radius: 12px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: var(--text-secondary);
+            color: white;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            background: var(--bg-main);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        
+        .result-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .tab:hover {
+            color: var(--primary);
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+            margin-top: 16px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        
+        th {
+            background: var(--bg-main);
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        tr:hover {
+            background: var(--bg-main);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+        
+        .alert-danger {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        
+        .btn-icon {
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            min-width: auto;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 16px;
+        }
+        
+        .search-box input {
+            padding-left: 40px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .card {
+                padding: 16px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                font-size: 0.85rem;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+        }
+        
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .summary-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .summary-card-title {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+        }
+        
+        .summary-card-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏠 DomPay</h1> <a href="https://wa.me/qr/ALXKVQFABW6WO1" class="custom-link" target="_blank">WhatsApp: Shuhrat</a>
+            <div class="subtitle">Идоракунии шартномаҳои хариди хона ва пардохтҳо</div>
+        </header>
+
+        <!-- ШАРТНОМА -->
+        <div class="card">
+            <div class="card-title">📝 Шартнома</div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Ному насаби харидор</label>
+                    <input type="text" id="buyerName" placeholder="Ному насаб">
+                </div>
+                <div class="form-group">
+                    <label>Телефон</label>
+                    <input type="tel" id="buyerPhone" placeholder="+992 ХХ ХХХ ХХХХ">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Номи шартнома</label>
+                    <input type="text" id="contractName" placeholder="Масалан: Хонаи №5">
+                </div>
+                <div class="form-group">
+                    <label>№ шартнома</label>
+                    <input type="text" id="contractNo" placeholder="001/2026">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Санаи шартнома</label>
+                    <input type="date" id="contractDate">
+                </div>
+                <div class="form-group">
+                    <label>Санаи оғоз</label>
+                    <input type="date" id="startDate">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Нархи хона (сомонӣ)</label>
+                    <input type="number" id="housePrice" placeholder="500000">
+                </div>
+                <div class="form-group">
+                    <label>Пешпардохт (%)</label>
+                    <input type="number" id="initialPercent" placeholder="50" min="0" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Моҳҳои қарз</label>
+                    <input type="number" id="monthsCount" placeholder="24">
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="calculate()">🧮 ҲИСОБ КУН</button>
+                <button class="btn btn-success" onclick="saveContract()">💾 Сабт ҳамчун нав</button>
+                <button class="btn btn-warning" onclick="updateContract()">✏️</button>
+            </div>
+        </div>
+
+        <!-- БАЗА -->
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">📂 База / Шартномаҳо</div>
+                
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Ҷустуҷӯ..." onkeyup="filterContracts()">
+                </div>
+                
+                <div class="form-group">
+                    <select id="contractsList" size="10" style="height: 300px;" onchange="selectContract()">
+                        <option value="all">👥 ҲАМАИ МИЗОҶОН</option>
+                    </select>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="loadContract()">📥 Боркунӣ</button>
+                    <button class="btn btn-danger" onclick="deleteContract()">🗑️ Нест кардан</button>
+                </div>
+
+                <div id="allClientsStats" style="display:none; margin-top: 20px;">
+                    <div class="alert alert-info">
+                        <strong>Оморӣ барои ҳамаи мизоҷон:</strong>
+                        <div style="margin-top: 10px;">
+                            <div>Ҷамъ нархи хонаҳо: <strong id="totalHousePrice">0</strong> сомонӣ</div>
+                            <div>Ҷамъ супорида: <strong id="totalPaid">0</strong> сомонӣ</div>
+                            <div>Ҷамъ боқимонда: <strong id="totalRemaining">0</strong> сомонӣ</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- НАТИҶАҲО -->
+            <div class="card">
+                <div class="card-title">📊 Натиҷаҳо</div>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="result-label">Нархи хона</div>
+                        <div class="result-value" id="resultHousePrice">0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Пешпардохт талаб</div>
+                        <div class="result-value" id="resultInitialNeed">0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Пешпардохт супорида</div>
+                        <div class="result-value" id="resultInitialPaid">0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Пешпардохт боқӣ</div>
+                        <div class="result-value" id="resultInitialRemain">0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Боқимондаи умумӣ</div>
+                        <div class="result-value" id="resultOverallRemain">0</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Пардохти ҳармоҳа</div>
+                        <div class="result-value" id="resultMonthlyPayment">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ПАРДОХТ -->
+        <div class="card">
+            <div class="card-title">💰 Пардохт</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Маблағи пардохт (сомонӣ)</label>
+                    <input type="number" id="paymentAmount" placeholder="10000">
+                </div>
+                <div class="form-group">
+                    <label>Санаи пардохт</label>
+                    <input type="date" id="paymentDate">
+                </div>
+            </div>
+            <button class="btn btn-success" onclick="addPayment()">✅ СУПОРДАМ</button>
+        </div>
+
+        <!-- ТАБҲО -->
+        <div class="card">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('schedule')">📅 Ҷадвали пардохт</button>
+                <button class="tab" onclick="switchTab('history')">📜 Таърихи пардохт</button>
+                <button class="tab" onclick="switchTab('daily')">📋 Ҳисоботи рӯзона</button>
+            </div>
+
+            <!-- Ҷадвали пардохт -->
+            <div id="scheduleTab" class="tab-content active">
+                <div class="table-wrapper">
+                    <table id="scheduleTable">
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Моҳ</th>
+                                <th>Маблағ</th>
+                                <th>Супорида</th>
+                                <th>Боқӣ</th>
+                                <th>Ҳолат</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scheduleTableBody">
+                            <tr>
+                                <td colspan="6" class="empty-state">
+                                    <div class="empty-state-icon">📅</div>
+                                    <div>Ҷадвал ҳоло холӣ аст</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Таърихи пардохт -->
+            <div id="historyTab" class="tab-content">
+                <div class="table-wrapper">
+                    <table id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>№</th>
+                                <th>Сана</th>
+                                <th>Маблағ</th>
+                                <th>Боқимондаи умумӣ</th>
+                                <th>Амал</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr>
+                                <td colspan="5" class="empty-state">
+                                    <div class="empty-state-icon">📜</div>
+                                    <div>Таърихи пардохт холӣ аст</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Ҳисоботи рӯзона -->
+            <div id="dailyTab" class="tab-content">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Санаи ҳисобот</label>
+                        <input type="date" id="dailyReportDate">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" onclick="showDailyReport()" style="margin-top: 28px;">Нишон деҳ</button>
+                    </div>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table id="dailyTable">
+                        <thead>
+                            <tr>
+                                <th>Ному насаб</th>
+                                <th>Телефон</th>
+                                <th>№ шартнома</th>
+                                <th>Номи шартнома</th>
+                                <th>Маблағ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dailyTableBody">
+                            <tr>
+                                <td colspan="5" class="empty-state">
+                                    <div class="empty-state-icon">📋</div>
+                                    <div>Санаро интихоб кунед</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <button class="btn btn-success" onclick="exportDailyToCSV()" style="margin-top: 16px;">⬇️ Экспорт Excel (рӯзона)</button>
+            </div>
+        </div>
+
+        <!-- ЭКСПОРТ/ИМПОРТ -->
+        <div class="card">
+            <div class="card-title">💾 Экспорт / Импорт</div>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="exportToJSON()">📥 Экспорт JSON</button>
+                <button class="btn btn-success" onclick="document.getElementById('importFile').click()">📤 Импорт JSON</button>
+                <button class="btn btn-warning" onclick="exportToCSV()">📊 Экспорт Excel/CSV</button>
+            </div>
+            <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importFromJSON(event)">
+        </div>
+    </div>
+
+    <script>
+        // IndexedDB setup
+        let db;
+        const DB_NAME = 'DomPayDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'contracts';
+
+        // Current state
+        let currentContract = null;
+        let tempPayments = []; // Барои пардохтҳое, ки то ҳол сабт нашудаанд
+
+        // Initialize IndexedDB
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        const objectStore = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+                        objectStore.createIndex('contractNo', 'contractNo', { unique: true });
+                        objectStore.createIndex('buyerName', 'buyerName', { unique: false });
+                        objectStore.createIndex('buyerPhone', 'buyerPhone', { unique: false });
+                    }
+                };
+            });
+        }
+
+        // Get all contracts
+        async function getAllContracts() {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const objectStore = transaction.objectStore(STORE_NAME);
+                const request = objectStore.getAll();
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // Get contract by ID
+        async function getContractById(id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readonly');
+                const objectStore = transaction.objectStore(STORE_NAME);
+                const request = objectStore.get(id);
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // Save contract
+        async function saveContractToDB(contract) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const objectStore = transaction.objectStore(STORE_NAME);
+                const request = objectStore.add(contract);
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // Update contract
+        async function updateContractInDB(contract) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const objectStore = transaction.objectStore(STORE_NAME);
+                const request = objectStore.put(contract);
+                
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // Delete contract
+        async function deleteContractFromDB(id) {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const objectStore = transaction.objectStore(STORE_NAME);
+                const request = objectStore.delete(id);
+                
+                request.onsuccess = () => resolve();
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // Load contracts list
+        async function loadContractsList() {
+            try {
+                const contracts = await getAllContracts();
+                const select = document.getElementById('contractsList');
+                select.innerHTML = '<option value="all">👥 ҲАМАИ МИЗОҶОН</option>';
+                
+                contracts.forEach(contract => {
+                    const option = document.createElement('option');
+                    option.value = contract.id;
+                    option.textContent = `${contract.buyerName} | ${contract.contractNo} | ${contract.contractName}`;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Хатогӣ дар бор кардани рӯйхат:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+        }
+
+        // Filter contracts
+        function filterContracts() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const select = document.getElementById('contractsList');
+            const options = select.options;
+            
+            for (let i = 1; i < options.length; i++) {
+                const text = options[i].textContent.toLowerCase();
+                options[i].style.display = text.includes(searchText) ? '' : 'none';
+            }
+        }
+
+        // Select contract
+        function selectContract() {
+            const select = document.getElementById('contractsList');
+            const selectedValue = select.value;
+            
+            if (selectedValue === 'all') {
+                showAllClientsStats();
+            } else {
+                document.getElementById('allClientsStats').style.display = 'none';
+            }
+        }
+
+        // Show all clients stats
+        async function showAllClientsStats() {
+            try {
+                const contracts = await getAllContracts();
+                let totalHouse = 0;
+                let totalPaid = 0;
+                
+                contracts.forEach(contract => {
+                    totalHouse += parseFloat(contract.housePrice) || 0;
+                    const payments = contract.payments || [];
+                    const paid = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+                    totalPaid += paid;
+                });
+                
+                const totalRemain = totalHouse - totalPaid;
+                
+                document.getElementById('totalHousePrice').textContent = formatNumber(totalHouse);
+                document.getElementById('totalPaid').textContent = formatNumber(totalPaid);
+                document.getElementById('totalRemaining').textContent = formatNumber(totalRemain);
+                document.getElementById('allClientsStats').style.display = 'block';
+            } catch (error) {
+                console.error('Хатогӣ дар ҳисоб:', error);
+            }
+        }
+
+        // Load selected contract
+        async function loadContract() {
+            const select = document.getElementById('contractsList');
+            const selectedValue = select.value;
+            
+            if (selectedValue === 'all') {
+                alert('Лутфан шартномаи мушаххасро интихоб кунед');
+                return;
+            }
+            
+            try {
+                const contract = await getContractById(parseInt(selectedValue));
+                if (contract) {
+                    currentContract = contract;
+                    tempPayments = [];
+                    
+                    // Fill form
+                    document.getElementById('buyerName').value = contract.buyerName || '';
+                    document.getElementById('buyerPhone').value = contract.buyerPhone || '';
+                    document.getElementById('contractName').value = contract.contractName || '';
+                    document.getElementById('contractNo').value = contract.contractNo || '';
+                    document.getElementById('contractDate').value = contract.contractDate || '';
+                    document.getElementById('startDate').value = contract.startDate || '';
+                    document.getElementById('housePrice').value = contract.housePrice || '';
+                    document.getElementById('initialPercent').value = contract.initialPercent || '';
+                    document.getElementById('monthsCount').value = contract.monthsCount || '';
+                    
+                    calculate();
+                }
+            } catch (error) {
+                console.error('Хатогӣ дар боркунӣ:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+        }
+
+        // Calculate
+        function calculate() {
+            try {
+                const housePrice = parseFloat(document.getElementById('housePrice').value) || 0;
+                const initialPercent = parseFloat(document.getElementById('initialPercent').value) || 0;
+                const monthsCount = parseInt(document.getElementById('monthsCount').value) || 0;
+                const startDate = document.getElementById('startDate').value;
+                
+                if (housePrice <= 0 || initialPercent < 0 || monthsCount <= 0) {
+                    alert('Лутфан ҳамаи маълумотро дуруст пур кунед');
+                    return;
+                }
+                
+                const initialNeed = housePrice * initialPercent / 100;
+                
+                // Calculate payments
+                let payments = [];
+                if (currentContract && currentContract.payments) {
+                    payments = currentContract.payments;
+                } else {
+                    payments = tempPayments;
+                }
+                
+                const totalPaid = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+                const overallRemain = housePrice - totalPaid;
+                
+                // Calculate initial payment status
+                // initialPaid ҳоло ҷамъи умумии ҳамаи пардохтҳост
+                const initialPaid = totalPaid;
+                const initialRemain = Math.max(0, initialNeed - totalPaid);
+                const remainingForMonths = Math.max(0, totalPaid - initialNeed);
+                
+                const loanAmount = housePrice - initialNeed;
+                const monthlyPayment = loanAmount / monthsCount;
+                
+                // Update results
+                document.getElementById('resultHousePrice').textContent = formatNumber(housePrice);
+                document.getElementById('resultInitialNeed').textContent = formatNumber(initialNeed) + ` (${initialPercent}%)`;
+                document.getElementById('resultInitialPaid').textContent = formatNumber(initialPaid);
+                document.getElementById('resultInitialRemain').textContent = formatNumber(initialRemain);
+                document.getElementById('resultOverallRemain').textContent = formatNumber(overallRemain);
+                document.getElementById('resultMonthlyPayment').textContent = formatNumber(monthlyPayment);
+                
+                // Generate schedule
+                generateSchedule(startDate, monthsCount, monthlyPayment, remainingForMonths);
+                
+                // Update history
+                updatePaymentHistory();
+            } catch (error) {
+                console.error('Хатогӣ дар ҳисоб:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+        }
+
+        // Generate schedule
+        function generateSchedule(startDate, monthsCount, monthlyPayment, remainingForMonths) {
+            if (!startDate || monthsCount <= 0) {
+                document.getElementById('scheduleTableBody').innerHTML = `
+                    <tr><td colspan="6" class="empty-state">
+                        <div class="empty-state-icon">📅</div>
+                        <div>Лутфан санаи оғоз ва моҳҳоро дохил кунед</div>
+                    </td></tr>
+                `;
+                return;
+            }
+            
+            const tbody = document.getElementById('scheduleTableBody');
+            tbody.innerHTML = '';
+            
+            const start = new Date(startDate);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            let remainingPayment = remainingForMonths;
+            
+            for (let i = 0; i < monthsCount; i++) {
+                const monthDate = new Date(start);
+                monthDate.setMonth(start.getMonth() + i);
+                
+                const monthStr = monthDate.toLocaleDateString('tg-TJ', { year: 'numeric', month: 'long' });
+                
+                let paid = 0;
+                let status = '';
+                let statusClass = '';
+                
+                if (remainingPayment >= monthlyPayment) {
+                    paid = monthlyPayment;
+                    remainingPayment -= monthlyPayment;
+                    status = '✓ Пардохт шуд';
+                    statusClass = 'badge-success';
+                } else if (remainingPayment > 0) {
+                    paid = remainingPayment;
+                    remainingPayment = 0;
+                    status = '⚠ Қисман';
+                    statusClass = 'badge-warning';
+                } else if (monthDate <= today) {
+                    status = '⏰ Ҳозир';
+                    statusClass = 'badge-warning';
+                } else {
+                    status = '⏳ Оянда';
+                    statusClass = 'badge-info';
+                }
+                
+                const remain = monthlyPayment - paid;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${monthStr}</td>
+                    <td>${formatNumber(monthlyPayment)}</td>
+                    <td>${formatNumber(paid)}</td>
+                    <td>${formatNumber(remain)}</td>
+                    <td><span class="badge ${statusClass}">${status}</span></td>
+                `;
+                tbody.appendChild(row);
+            }
+        }
+
+        // Add payment
+        async function addPayment() {
+            try {
+                const amount = parseFloat(document.getElementById('paymentAmount').value);
+                const date = document.getElementById('paymentDate').value;
+                
+                if (!amount || amount <= 0) {
+                    alert('Лутфан маблағро дохил кунед');
+                    return;
+                }
+                
+                if (!date) {
+                    alert('Лутфан санаро интихоб кунед');
+                    return;
+                }
+                
+                const payment = {
+                    amount: amount,
+                    date: date,
+                    timestamp: new Date().toISOString()
+                };
+                
+                if (currentContract && currentContract.id) {
+                    // Шартнома сабт шудааст, пардохтро фавран сабт мекунем
+                    if (!currentContract.payments) {
+                        currentContract.payments = [];
+                    }
+                    currentContract.payments.push(payment);
+                    await updateContractInDB(currentContract);
+                    alert('Пардохт сабт шуд!');
+                } else {
+                    // Шартнома ҳоло сабт нашудааст, дар RAM нигоҳ медорем
+                    tempPayments.push(payment);
+                    alert('Пардохт ба рӯйхат илова шуд. Барои сабт "Сабт ҳамчун нав"-ро пахш кунед.');
+                }
+                
+                // Clear form
+                document.getElementById('paymentAmount').value = '';
+                document.getElementById('paymentDate').value = '';
+                
+                // Recalculate
+                calculate();
+            } catch (error) {
+                console.error('Хатогӣ дар сабти пардохт:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+        }
+
+        // Update payment history
+        function updatePaymentHistory() {
+            let payments = [];
+            if (currentContract && currentContract.payments) {
+                payments = currentContract.payments;
+            } else {
+                payments = tempPayments;
+            }
+            
+            if (payments.length === 0) {
+                document.getElementById('historyTableBody').innerHTML = `
+                    <tr><td colspan="5" class="empty-state">
+                        <div class="empty-state-icon">📜</div>
+                        <div>Таърихи пардохт холӣ аст</div>
+                    </td></tr>
+                `;
+                return;
+            }
+            
+            const housePrice = parseFloat(document.getElementById('housePrice').value) || 0;
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = '';
+            
+            let cumulativePaid = 0;
+            
+            payments.forEach((payment, index) => {
+                cumulativePaid += parseFloat(payment.amount) || 0;
+                const remainAfter = housePrice - cumulativePaid;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${formatDate(payment.date)}</td>
+                    <td>${formatNumber(payment.amount)}</td>
+                    <td>${formatNumber(remainAfter)}</td>
+                    <td>
+                        <button class="btn btn-warning btn-icon" onclick="editPayment(${index})">✏️</button>
+                        <button class="btn btn-danger btn-icon" onclick="deletePayment(${index})">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Edit payment
+        async function editPayment(index) {
+            try {
+                let payments = currentContract && currentContract.payments ? currentContract.payments : tempPayments;
+                const payment = payments[index];
+                
+                const newAmount = prompt('Маблағи нав:', payment.amount);
+                if (newAmount === null) return;
+                
+                const newDate = prompt('Санаи нав (YYYY-MM-DD):', payment.date);
+                if (newDate === null) return;
+                
+                payments[index] = {
+                    amount: parseFloat(newAmount),
+                    date: newDate,
+                    timestamp: payment.timestamp
+                };
+                
+                if (currentContract && currentContract.id) {
+                    await updateContractInDB(currentContract);
+                }
+                
+                calculate();
+            } catch (error) {
+                console.error('Хатогӣ дар иваз:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+        }
+
+        // Delete payment
+        async function deletePayment(index) {
+            if (!confirm('Шумо мутмаин ҳастед, ки мехоҳед ин пардохтро нест кунед?')) {
+                return;
+            }
+            
+            try {
+                let payments = currentContract && currentContract.payments ? currentContract.payments : tempPayments;
+                payments.splice(index, 1);
+                
+                if (currentContract && currentContract.id) {
+                    await updateContractInDB(currentContract);
+                }
+                
+                calculate();
+            } catch (error) {
+                console.error('Хатогӣ дар нест кардан:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+        }
+
+        // Save contract
+        async function saveContract() {
+            try {
+                const contractNo = document.getElementById('contractNo').value;
+                
+                if (!contractNo) {
+                    alert('Лутфан № шартномаро дохил кунед');
+                    return;
+                }
+                
+                const contract = {
+                    buyerName: document.getElementById('buyerName').value,
+                    buyerPhone: document.getElementById('buyerPhone').value,
+                    contractName: document.getElementById('contractName').value,
+                    contractNo: contractNo,
+                    contractDate: document.getElementById('contractDate').value,
+                    startDate: document.getElementById('startDate').value,
+                    housePrice: parseFloat(document.getElementById('housePrice').value) || 0,
+                    initialPercent: parseFloat(document.getElementById('initialPercent').value) || 0,
+                    monthsCount: parseInt(document.getElementById('monthsCount').value) || 0,
+                    payments: tempPayments,
+                    createdAt: new Date().toISOString()
+                };
+                
+                await saveContractToDB(contract);
+                alert('Шартнома сабт шуд!');
+                
+                tempPayments = [];
+                await loadContractsList();
+                clearForm();
+            } catch (error) {
+                console.error('Хатогӣ дар сабт:', error);
+                if (error.name === 'ConstraintError') {
+                    alert('Шартнома бо ин рақам аллакай мавҷуд аст!');
+                } else {
+                    alert('Хатогӣ: ' + error.message);
+                }
+            }
+        }
+
+        // Update contract
+        async function updateContract() {
+            if (!currentContract || !currentContract.id) {
+                alert('Лутфан аввал шартномаро бор кунед');
+                return;
+            }
+            
+            try {
+                currentContract.buyerName = document.getElementById('buyerName').value;
+                currentContract.buyerPhone = document.getElementById('buyerPhone').value;
+                currentContract.contractName = document.getElementById('contractName').value;
+                currentContract.contractNo = document.getElementById('contractNo').value;
+                currentContract.contractDate = document.getElementById('contractDate').value;
+                currentContract.startDate = document.getElementById('startDate').value;
+                currentContract.housePrice = parseFloat(document.getElementById('housePrice').value) || 0;
+                currentContract.initialPercent = parseFloat(document.getElementById('initialPercent').value) || 0;
+                currentContract.monthsCount = parseInt(document.getElementById('monthsCount').value) || 0;
+                currentContract.updatedAt = new Date().toISOString();
+                
+                await updateContractInDB(currentContract);
+                alert('Шартнома навсозӣ шуд!');
+                
+                await loadContractsList();
+                calculate();
+            } catch (error) {
+                console.error('Хатогӣ дар навсозӣ:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+        }
+
+        // Delete contract
+        async function deleteContract() {
+            const select = document.getElementById('contractsList');
+            const selectedValue = select.value;
+            
+            if (selectedValue === 'all') {
+                alert('Лутфан шартномаи мушаххасро интихоб кунед');
+                return;
+            }
+            
+            if (!confirm('Шумо мутмаин ҳастед, ки мехоҳед ин шартномаро нест кунед?')) {
+                return;
+            }
+            
+            try {
+                await deleteContractFromDB(parseInt(selectedValue));
+                alert('Шартнома нест карда шуд!');
+                
+                currentContract = null;
+                tempPayments = [];
+                await loadContractsList();
+                clearForm();
+            } catch (error) {
+                console.error('Хатогӣ дар нест кардан:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+        }
+
+        // Clear form
+        function clearForm() {
+            document.getElementById('buyerName').value = '';
+            document.getElementById('buyerPhone').value = '';
+            document.getElementById('contractName').value = '';
+            document.getElementById('contractNo').value = '';
+            document.getElementById('contractDate').value = '';
+            document.getElementById('startDate').value = '';
+            document.getElementById('housePrice').value = '';
+            document.getElementById('initialPercent').value = '';
+            document.getElementById('monthsCount').value = '';
+            document.getElementById('paymentAmount').value = '';
+            document.getElementById('paymentDate').value = '';
+            
+            document.getElementById('resultHousePrice').textContent = '0';
+            document.getElementById('resultInitialNeed').textContent = '0';
+            document.getElementById('resultInitialPaid').textContent = '0';
+            document.getElementById('resultInitialRemain').textContent = '0';
+            document.getElementById('resultOverallRemain').textContent = '0';
+            document.getElementById('resultMonthlyPayment').textContent = '0';
+            
+            document.getElementById('scheduleTableBody').innerHTML = `
+                <tr><td colspan="6" class="empty-state">
+                    <div class="empty-state-icon">📅</div>
+                    <div>Ҷадвал ҳоло холӣ аст</div>
+                </td></tr>
+            `;
+            
+            document.getElementById('historyTableBody').innerHTML = `
+                <tr><td colspan="5" class="empty-state">
+                    <div class="empty-state-icon">📜</div>
+                    <div>Таърихи пардохт холӣ аст</div>
+                </td></tr>
+            `;
+        }
+
+        // Switch tab
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            contents.forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        // Show daily report
+        async function showDailyReport() {
+            const date = document.getElementById('dailyReportDate').value;
+            
+            if (!date) {
+                alert('Лутфан санаро интихоб кунед');
+                return;
+            }
+            
+            try {
+                const contracts = await getAllContracts();
+                const tbody = document.getElementById('dailyTableBody');
+                tbody.innerHTML = '';
+                
+                const reportDate = new Date(date);
+                let found = false;
+                
+                contracts.forEach(contract => {
+                    const startDate = new Date(contract.startDate);
+                    const monthsCount = contract.monthsCount || 0;
+                    const monthlyPayment = (contract.housePrice - (contract.housePrice * contract.initialPercent / 100)) / monthsCount;
+                    
+                    // Санҷиши ҳар моҳ
+                    for (let i = 0; i < monthsCount; i++) {
+                        const monthDate = new Date(startDate);
+                        monthDate.setMonth(startDate.getMonth() + i);
+                        
+                        // Муқоисаи санаҳо (фақат рӯз, моҳ, сол)
+                        if (monthDate.getDate() === reportDate.getDate() &&
+                            monthDate.getMonth() === reportDate.getMonth() &&
+                            monthDate.getFullYear() === reportDate.getFullYear()) {
+                            
+                            // Санҷиш, ки оё пардохт шудааст
+                            const payments = contract.payments || [];
+                            const totalPaid = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+                            const initialNeed = contract.housePrice * contract.initialPercent / 100;
+                            const paidForMonths = Math.max(0, totalPaid - initialNeed);
+                            const monthsPaid = Math.floor(paidForMonths / monthlyPayment);
+                            
+                            if (i >= monthsPaid) {
+                                found = true;
+                                const row = document.createElement('tr');
+                                row.innerHTML = `
+                                    <td>${contract.buyerName}</td>
+                                    <td>${contract.buyerPhone}</td>
+                                    <td>${contract.contractNo}</td>
+                                    <td>${contract.contractName}</td>
+                                    <td>${formatNumber(monthlyPayment)}</td>
+                                `;
+                                tbody.appendChild(row);
+                            }
+                            break;
+                        }
+                    }
+                });
+                
+                if (!found) {
+                    tbody.innerHTML = `
+                        <tr><td colspan="5" class="empty-state">
+                            <div class="empty-state-icon">✓</div>
+                            <div>Дар ин сана пардохтҳо нестанд</div>
+                        </td></tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Хатогӣ дар ҳисоботи рӯзона:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+        }
+
+        // Export to JSON
+        async function exportToJSON() {
+            try {
+                const contracts = await getAllContracts();
+                const dataStr = JSON.stringify(contracts, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `DomPay_backup_${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+            } catch (error) {
+                console.error('Хатогӣ дар экспорт:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+        }
+
+        // Import from JSON
+        async function importFromJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!confirm('Шумо мутмаин ҳастед? Ин амал ҳамаи маълумоти ҷориро иваз мекунад!')) {
+                event.target.value = '';
+                return;
+            }
+            
+            try {
+                const text = await file.text();
+                const contracts = JSON.parse(text);
+                
+                // Clear existing data
+                const transaction = db.transaction([STORE_NAME], 'readwrite');
+                const objectStore = transaction.objectStore(STORE_NAME);
+                await new Promise((resolve, reject) => {
+                    const request = objectStore.clear();
+                    request.onsuccess = resolve;
+                    request.onerror = () => reject(request.error);
+                });
+                
+                // Add imported data
+                for (const contract of contracts) {
+                    delete contract.id; // Remove old IDs
+                    await saveContractToDB(contract);
+                }
+                
+                alert('Маълумот бомуваффақият ворид шуд!');
+                await loadContractsList();
+                clearForm();
+            } catch (error) {
+                console.error('Хатогӣ дар импорт:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+            
+            event.target.value = '';
+        }
+
+        // Export to CSV
+        async function exportToCSV() {
+            try {
+                const contracts = await getAllContracts();
+                let csv = '\uFEFF'; // UTF-8 BOM
+                csv += '№ шартнома;Ному насаб;Телефон;Номи шартнома;Нархи хона;% пешпардохт;Моҳҳо;Санаи пардохт;Маблағи пардохт;Боқимондаи умумӣ\n';
+                
+                contracts.forEach(contract => {
+                    const payments = contract.payments || [];
+                    const housePrice = contract.housePrice || 0;
+                    
+                    if (payments.length === 0) {
+                        csv += `${contract.contractNo};${contract.buyerName};${contract.buyerPhone};${contract.contractName};${housePrice};${contract.initialPercent};${contract.monthsCount};;;\n`;
+                    } else {
+                        let cumulativePaid = 0;
+                        payments.forEach(payment => {
+                            cumulativePaid += parseFloat(payment.amount) || 0;
+                            const remainAfter = housePrice - cumulativePaid;
+                            csv += `${contract.contractNo};${contract.buyerName};${contract.buyerPhone};${contract.contractName};${housePrice};${contract.initialPercent};${contract.monthsCount};${payment.date};${payment.amount};${remainAfter}\n`;
+                        });
+                    }
+                });
+                
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `DomPay_export_${new Date().toISOString().split('T')[0]}.csv`;
+                link.click();
+            } catch (error) {
+                console.error('Хатогӣ дар экспорт CSV:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+        }
+
+        // Export daily to CSV
+        async function exportDailyToCSV() {
+            const date = document.getElementById('dailyReportDate').value;
+            
+            if (!date) {
+                alert('Лутфан санаро интихоб кунед');
+                return;
+            }
+            
+            try {
+                const contracts = await getAllContracts();
+                let csv = '\uFEFF'; // UTF-8 BOM
+                csv += 'Ному насаб;Телефон;№ шартнома;Номи шартнома;Маблағ\n';
+                
+                const reportDate = new Date(date);
+                
+                contracts.forEach(contract => {
+                    const startDate = new Date(contract.startDate);
+                    const monthsCount = contract.monthsCount || 0;
+                    const monthlyPayment = (contract.housePrice - (contract.housePrice * contract.initialPercent / 100)) / monthsCount;
+                    
+                    for (let i = 0; i < monthsCount; i++) {
+                        const monthDate = new Date(startDate);
+                        monthDate.setMonth(startDate.getMonth() + i);
+                        
+                        if (monthDate.getDate() === reportDate.getDate() &&
+                            monthDate.getMonth() === reportDate.getMonth() &&
+                            monthDate.getFullYear() === reportDate.getFullYear()) {
+                            
+                            const payments = contract.payments || [];
+                            const totalPaid = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+                            const initialNeed = contract.housePrice * contract.initialPercent / 100;
+                            const paidForMonths = Math.max(0, totalPaid - initialNeed);
+                            const monthsPaid = Math.floor(paidForMonths / monthlyPayment);
+                            
+                            if (i >= monthsPaid) {
+                                csv += `${contract.buyerName};${contract.buyerPhone};${contract.contractNo};${contract.contractName};${monthlyPayment}\n`;
+                            }
+                            break;
+                        }
+                    }
+                });
+                
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `DomPay_daily_${date}.csv`;
+                link.click();
+            } catch (error) {
+                console.error('Хатогӣ дар экспорт CSV:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+        }
+
+        // Format number
+        function formatNumber(num) {
+            return new Intl.NumberFormat('tg-TJ').format(num);
+        }
+
+        // Format date
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('tg-TJ');
+        }
+
+        // Initialize app
+        async function init() {
+            try {
+                await initDB();
+                await loadContractsList();
+                
+                // Set today's date as default
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('paymentDate').value = today;
+                document.getElementById('dailyReportDate').value = today;
+                document.getElementById('contractDate').value = today;
+                document.getElementById('startDate').value = today;
+            } catch (error) {
+                console.error('Хатогӣ дар оғоз:', error);
+                alert('Хатогӣ: ' + error.message);
+            }
+        }
+
+        // Start app
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
