@@ -952,7 +952,11 @@
                 const monthDate = new Date(start);
                 monthDate.setMonth(start.getMonth() + i);
                 
-                const monthStr = monthDate.toLocaleDateString('tg-TJ', { year: 'numeric', month: 'long' });
+                // Формат: 13 январ 2026
+                const day = monthDate.getDate();
+                const monthStr = monthDate.toLocaleDateString('ru-RU', { month: 'long' });
+                const year = monthDate.getFullYear();
+                const fullDateStr = `${day} ${monthStr} ${year}`;
                 
                 let paid = 0;
                 let status = '';
@@ -981,7 +985,7 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${i + 1}</td>
-                    <td>${monthStr}</td>
+                    <td>${fullDateStr}</td>
                     <td>${formatNumber(monthlyPayment)}</td>
                     <td>${formatNumber(paid)}</td>
                     <td>${formatNumber(remain)}</td>
@@ -1043,9 +1047,9 @@
         function updatePaymentHistory() {
             let payments = [];
             if (currentContract && currentContract.payments) {
-                payments = currentContract.payments;
+                payments = [...currentContract.payments]; // Нусха гирифтан
             } else {
-                payments = tempPayments;
+                payments = [...tempPayments]; // Нусха гирифтан
             }
             
             if (payments.length === 0) {
@@ -1062,25 +1066,32 @@
             const tbody = document.getElementById('historyTableBody');
             tbody.innerHTML = '';
             
+            // Ҳисоби боқимонда барои ҳар пардохт (аз аввал то охир)
+            const balances = [];
             let cumulativePaid = 0;
-            
-            payments.forEach((payment, index) => {
+            payments.forEach((payment) => {
                 cumulativePaid += parseFloat(payment.amount) || 0;
-                const remainAfter = housePrice - cumulativePaid;
+                balances.push(housePrice - cumulativePaid);
+            });
+            
+            // Нишон додан аз охир ба аввал (баръакс)
+            for (let i = payments.length - 1; i >= 0; i--) {
+                const payment = payments[i];
+                const remainAfter = balances[i];
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${index + 1}</td>
+                    <td>${i + 1}</td>
                     <td>${formatDate(payment.date)}</td>
                     <td>${formatNumber(payment.amount)}</td>
                     <td>${formatNumber(remainAfter)}</td>
                     <td>
-                        <button class="btn btn-warning btn-icon" onclick="editPayment(${index})">✏️</button>
-                        <button class="btn btn-danger btn-icon" onclick="deletePayment(${index})">🗑️</button>
+                        <button class="btn btn-warning btn-icon" onclick="editPayment(${i})">✏️</button>
+                        <button class="btn btn-danger btn-icon" onclick="deletePayment(${i})">🗑️</button>
                     </td>
                 `;
                 tbody.appendChild(row);
-            });
+            }
         }
 
         // Edit payment
@@ -1294,49 +1305,75 @@
                 tbody.innerHTML = '';
                 
                 const reportDate = new Date(date);
+                reportDate.setHours(0, 0, 0, 0);
                 let found = false;
                 
                 contracts.forEach(contract => {
                     const startDate = new Date(contract.startDate);
                     const monthsCount = contract.monthsCount || 0;
-                    const monthlyPayment = (contract.housePrice - (contract.housePrice * contract.initialPercent / 100)) / monthsCount;
+                    const housePrice = contract.housePrice || 0;
+                    const initialPercent = contract.initialPercent || 0;
+                    const initialNeed = housePrice * initialPercent / 100;
+                    const loanAmount = housePrice - initialNeed;
+                    const monthlyPayment = loanAmount / monthsCount;
                     
-                    // Санҷиши ҳар моҳ
+                    const payments = contract.payments || [];
+                    const totalPaid = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+                    
+                    // 1. Санҷиши пешпардохт
+                    if (totalPaid < initialNeed) {
+                        const initialRemaining = initialNeed - totalPaid;
+                        found = true;
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${contract.buyerName}</td>
+                            <td>${contract.buyerPhone}</td>
+                            <td>${contract.contractNo}</td>
+                            <td>${contract.contractName}</td>
+                            <td>${formatNumber(initialRemaining)} <span style="color: #f59e0b;">(Пешпардохт ${initialPercent}%)</span></td>
+                        `;
+                        tbody.appendChild(row);
+                        return; // Агар пешпардохт пур нашуда бошад, моҳҳоро санҷидан лозим нест
+                    }
+                    
+                    // 2. Санҷиши моҳҳо
+                    const paidForMonths = totalPaid - initialNeed;
+                    let totalOwed = 0;
+                    let monthsOwed = [];
+                    
                     for (let i = 0; i < monthsCount; i++) {
                         const monthDate = new Date(startDate);
                         monthDate.setMonth(startDate.getMonth() + i);
+                        monthDate.setHours(0, 0, 0, 0);
                         
-                        // Муқоисаи санаҳо (фақат рӯз, моҳ, сол)
-                        if (monthDate.getDate() === reportDate.getDate() &&
-                            monthDate.getMonth() === reportDate.getMonth() &&
-                            monthDate.getFullYear() === reportDate.getFullYear()) {
-                            
-                            // Санҷиш, ки оё пардохт шудааст
-                            const payments = contract.payments || [];
-                            const totalPaid = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
-                            const initialNeed = contract.housePrice * contract.initialPercent / 100;
-                            const paidForMonths = Math.max(0, totalPaid - initialNeed);
-                            
-                            // Ҳисоби боқимондаи ин моҳ
-                            const paidUntilThisMonth = Math.min(paidForMonths, i * monthlyPayment);
+                        // Агар санаи моҳ <= санаи ҳисобот (таърихи гузашта ва имрӯз)
+                        if (monthDate <= reportDate) {
                             const paidForCurrentMonth = Math.max(0, paidForMonths - (i * monthlyPayment));
                             const remainingForThisMonth = Math.max(0, monthlyPayment - paidForCurrentMonth);
                             
-                            // Агар ин моҳ пурра пардохт нашуда бошад
                             if (remainingForThisMonth > 0) {
-                                found = true;
-                                const row = document.createElement('tr');
-                                row.innerHTML = `
-                                    <td>${contract.buyerName}</td>
-                                    <td>${contract.buyerPhone}</td>
-                                    <td>${contract.contractNo}</td>
-                                    <td>${contract.contractName}</td>
-                                    <td>${formatNumber(remainingForThisMonth)}</td>
-                                `;
-                                tbody.appendChild(row);
+                                totalOwed += remainingForThisMonth;
+                                const day = monthDate.getDate();
+                                const monthStr = monthDate.toLocaleDateString('ru-RU', { month: 'long' });
+                                const year = monthDate.getFullYear();
+                                monthsOwed.push(`${day} ${monthStr} ${year}`);
                             }
-                            break;
                         }
+                    }
+                    
+                    // Агар мизоҷ чизе бояд супорад
+                    if (totalOwed > 0) {
+                        found = true;
+                        const row = document.createElement('tr');
+                        const monthsList = monthsOwed.length > 0 ? `<br><small style="color: #64748b;">${monthsOwed.join(', ')}</small>` : '';
+                        row.innerHTML = `
+                            <td>${contract.buyerName}</td>
+                            <td>${contract.buyerPhone}</td>
+                            <td>${contract.contractNo}</td>
+                            <td>${contract.contractName}</td>
+                            <td>${formatNumber(totalOwed)} <span style="color: #ef4444;">(${monthsOwed.length} моҳ)</span>${monthsList}</td>
+                        `;
+                        tbody.appendChild(row);
                     }
                 });
                 
@@ -1344,7 +1381,7 @@
                     tbody.innerHTML = `
                         <tr><td colspan="5" class="empty-state">
                             <div class="empty-state-icon">✓</div>
-                            <div>Дар ин сана пардохтҳо нестанд</div>
+                            <div>Дар ин сана пардохтҳои насупорида нестанд</div>
                         </td></tr>
                     `;
                 }
@@ -1458,38 +1495,57 @@
             try {
                 const contracts = await getAllContracts();
                 let csv = '\uFEFF'; // UTF-8 BOM
-                csv += 'Ному насаб;Телефон;№ шартнома;Номи шартнома;Маблағ\n';
+                csv += 'Ному насаб;Телефон;№ шартнома;Номи шартнома;Маблағ;Тавзеҳот\n';
                 
                 const reportDate = new Date(date);
+                reportDate.setHours(0, 0, 0, 0);
                 
                 contracts.forEach(contract => {
                     const startDate = new Date(contract.startDate);
                     const monthsCount = contract.monthsCount || 0;
-                    const monthlyPayment = (contract.housePrice - (contract.housePrice * contract.initialPercent / 100)) / monthsCount;
+                    const housePrice = contract.housePrice || 0;
+                    const initialPercent = contract.initialPercent || 0;
+                    const initialNeed = housePrice * initialPercent / 100;
+                    const loanAmount = housePrice - initialNeed;
+                    const monthlyPayment = loanAmount / monthsCount;
+                    
+                    const payments = contract.payments || [];
+                    const totalPaid = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+                    
+                    // 1. Санҷиши пешпардохт
+                    if (totalPaid < initialNeed) {
+                        const initialRemaining = initialNeed - totalPaid;
+                        csv += `${contract.buyerName};${contract.buyerPhone};${contract.contractNo};${contract.contractName};${initialRemaining};Пешпардохт ${initialPercent}%\n`;
+                        return;
+                    }
+                    
+                    // 2. Санҷиши моҳҳо
+                    const paidForMonths = totalPaid - initialNeed;
+                    let totalOwed = 0;
+                    let monthsOwed = [];
                     
                     for (let i = 0; i < monthsCount; i++) {
                         const monthDate = new Date(startDate);
                         monthDate.setMonth(startDate.getMonth() + i);
+                        monthDate.setHours(0, 0, 0, 0);
                         
-                        if (monthDate.getDate() === reportDate.getDate() &&
-                            monthDate.getMonth() === reportDate.getMonth() &&
-                            monthDate.getFullYear() === reportDate.getFullYear()) {
-                            
-                            const payments = contract.payments || [];
-                            const totalPaid = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
-                            const initialNeed = contract.housePrice * contract.initialPercent / 100;
-                            const paidForMonths = Math.max(0, totalPaid - initialNeed);
-                            
-                            // Ҳисоби боқимондаи ин моҳ
+                        if (monthDate <= reportDate) {
                             const paidForCurrentMonth = Math.max(0, paidForMonths - (i * monthlyPayment));
                             const remainingForThisMonth = Math.max(0, monthlyPayment - paidForCurrentMonth);
                             
-                            // Агар ин моҳ пурра пардохт нашуда бошад
                             if (remainingForThisMonth > 0) {
-                                csv += `${contract.buyerName};${contract.buyerPhone};${contract.contractNo};${contract.contractName};${remainingForThisMonth}\n`;
+                                totalOwed += remainingForThisMonth;
+                                const day = monthDate.getDate();
+                                const monthStr = monthDate.toLocaleDateString('ru-RU', { month: 'long' });
+                                const year = monthDate.getFullYear();
+                                monthsOwed.push(`${day} ${monthStr} ${year}`);
                             }
-                            break;
                         }
+                    }
+                    
+                    if (totalOwed > 0) {
+                        const monthsList = monthsOwed.join(', ');
+                        csv += `${contract.buyerName};${contract.buyerPhone};${contract.contractNo};${contract.contractName};${totalOwed};${monthsOwed.length} моҳ: ${monthsList}\n`;
                     }
                 });
                 
